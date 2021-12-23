@@ -5,7 +5,7 @@ resource "vault_gcp_secret_backend" "endpoint" {
 }
 
 resource "vault_gcp_secret_roleset" "roles" {
-  for_each = local.roles
+  for_each = var.roles
 
   backend      = vault_gcp_secret_backend.endpoint.path
   project      = var.project
@@ -13,8 +13,11 @@ resource "vault_gcp_secret_roleset" "roles" {
   roleset      = each.key
   secret_type  = each.value.secret_type
 
-  binding {
-    resource = each.value.binding_resource
-    roles    = each.value.binding_roles
+  dynamic "binding" {
+    for_each = each.value.bindings
+    content {
+      resource = binding.value.resource
+      roles    = binding.value.roles
+    }
   }
 }

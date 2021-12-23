@@ -20,3 +20,14 @@ variable "credentials" {
   default     = null
   description = "Credentials to use for the integration."
 }
+
+variable "roles" {
+  type = map(object({
+    secret_type = string
+    bindings = list(object({
+      resource = string
+      roles    = list(string)
+    }))
+  }))
+  description = "Rolesets to configure for Google Cloud. For information about what to put here, especially IAM bindings https://www.vaultproject.io/docs/secrets/gcp#bindings"
+}
